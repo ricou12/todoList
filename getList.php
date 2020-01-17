@@ -8,7 +8,6 @@ $servResponse = new MyComponentsSql();
 $connect = $servResponse->connectDataBase('todoList');
 // RECUPERE TOUS LES ENREGISTREMENT
 $stateOfRequest = $servResponse->getDataBase('1');
-send_json([
-        $stateOfRequest
-    ]);
-
+send_json($stateOfRequest);
+    
+// $stateOfRequest = $servResponse->getAllDataBase();

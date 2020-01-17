@@ -43,15 +43,24 @@ class MyComponentsSql {
 
     function getDataBase($user){
         // Récupère les infos dans la base de donnée.
-        $query = $this->_dataBase->prepare('SELECT titre, note FROM blocnote WHERE user = :user');
+        $query = $this->_dataBase->prepare('SELECT titre,note FROM blocnote WHERE user = :user');
         $query->bindParam(':user', intval($user));
         $query->execute();
-        $result = $query->fetch();
+        $result = $query->fetchAll();
         $query->closeCursor();
         return $result;
         
     }
 
+    function getAllDataBase(){
+        // Récupère les infos dans la base de donnée.
+        $query = $this->_dataBase->prepare('SELECT titre,note FROM blocnote');
+        $query->execute();
+        $result = $query->fetchAll();
+        $query->closeCursor();
+        return $result;
+        
+    }
 }
 
 ?>
