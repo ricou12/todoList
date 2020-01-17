@@ -94,6 +94,8 @@ const requestToServer = (adressServe,data,state) => {
         // Lecture de la réponse
         if (returnData && returnData.success) {
             $txtResult.value = returnData.success;
+            $title.value="";
+            $title.value="";
             // Si suppression d'entrée, rafraichi la page en relançant une requete pour récupérer la liste
             if (state){
                updateDataBase(); 
