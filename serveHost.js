@@ -1,65 +1,33 @@
-const $main = document.querySelector('conteneur');
+const $updateNote = document.querySelector('.updateNote');
+
 //  récupèrer la liste des enregistrement.
 const $buttonUpload = document.querySelector('.buttonUpload');
-const $updateNote = document.querySelector('.updateNote');
-// const $titleUpdate = document.querySelector('.updateNote input[name="nom"]');
-// const $memoUpdate = document.querySelector('.updateNote textarea[name="note"]');
-const $txtResult = document.querySelector('.txtResult');
 
 // Nouvel enregistrement
-const $btnSend = document.querySelector('.createNote button');
-const $title = document.querySelector('.createNote input[name="nom"]');
-const $memo = document.querySelector('.createNote textarea[name="note"]');
-const $message = document.querySelector('.createNote h4');
+const $btnSend = document.querySelector('.createNote .btnRegister');
+const $title = document.querySelector('.createNote .title');
+const $memo = document.querySelector('.createNote .notes');
 
-$btnSend.addEventListener('click', (evt) => {
-    // Récupérer les valeurs du formulaire et les charges dans un tableau.
-    const data = {
-        "title": $title.value,
-        "memo": $memo.value
-    };
-    sendRequest(data);
+// CONSOLE
+const $txtResult = document.querySelector('.txtResult');
+$txtResult.addEventListener('input',(evt) => {
+    console.log('ok');
 });
 
-// ENVOI LES DONNEES DU FORMULAIRE AU SERVEUR VIA UNE REQUETE DATA OBJ --> CONVERTI EN JSON
-const sendRequest = (data) => {
-    fetch('./updateNotes.php', {
-        method: "POST",
-        body: JSON.stringify(data)
-    })
-    .then(res => res.json())
-    .then(returnData => {
-        // Lecture de la réponse
-        if (returnData && returnData.success) {
-            $message.innerHTML = "Enregistrement réussi !";
-            $title.value = "";
-            $memo.value = "";
-        } else {
-            $message.innerHTML = "Impossible d'enregistrer !";
-        }
-    })
-    .catch((error) => {
-        $message.innerHTML = 'Il y a eu un problème avec l\'opération fetch: ' + error.message;
-    });
-}
-
-/* ------------------------------------------------------------- */
-
-$buttonUpload.addEventListener('click', evt => {
+// RECUPERE LA LISTE DES TODO PAR UTILISATEUR
+$buttonUpload.addEventListener('click', () => {
     updateDataBase();
 });
-
 // Envoi de la requete de connexion au serveur pour récupérer la liste stocké dans la base de donnée.
 const updateDataBase = () => {
     fetch('./getList.php',{method: "POST"})
         .then(res => res.json())
         .then(returnData => {
             if (returnData){
-                $txtResult.value = "Connection réussie, réception des données !"; 
-                $updateNote.innerHTML = returnData.map(element => generateList(element.titre,element.note) ).join('');
-               console.log(returnData);
+                $txtResult.value = "Mémos mise à jour !"; 
+                $updateNote.innerHTML = returnData.map(element => generateList(element.id,element.titre,element.note) ).join('');
             } else {
-                $txtResult.value = "Connection réussie, pas de données disponible !"; 
+                $txtResult.value = "Vous n'avez enregistré aucun mémo !"; 
             }
         })
         .catch((error) => {
@@ -67,21 +35,77 @@ const updateDataBase = () => {
         });
 }
 
-const generateList = (title,note) => {
+const generateList = (id,title,note) => {
     return `
-        <li class="UploadList-li border rounded mb-2 p-2">
-            <div class="row">
-                <div class="col-12 col-md-2">
-                    <input type="checkbox" id="titleUploaded">
-                    <label for="titleUploaded">${title}</label>
-                </div>
-                <div class="col-12 col-md-auto">
-                    <p>${note}</p>
-                </div>
-                <div class="col-12 col-md-2">
-                    <button>dell</button>
-                </div>
+    <div class="container">
+        <div class="row border">
+            <div class="col-12 col-lg-4 d-flex flex-nowrap justify-content-between p-2">
+                    <div class="d-flex flex-nowrap align-items-start">
+                        <input type="checkbox" id="titleUploaded">
+                        <label class="mx-2" for="titleUploaded">${title}</label>
+                    </div>
+                    <div>
+                        <a href="#"><img src="./img/trash.png" alt="trash" data-id="${id}" width="50"></a>
+                    </div>
             </div>
-        </li>
+            <div class="col-12 col-lg-8">
+                <p>${note}</p>
+            </div>
+        </div>
+    </div>
     `;
 }
+
+// ENREGISTRE LES DONNEES DU FORMULAIRE AU SERVEUR VIA UNE REQUETE DATA OBJ --> CONVERTI EN JSON
+$btnSend.addEventListener('click', () => {
+    if ($title.value != '' || $memo.value != '' ){
+        // Récupérer les valeurs du formulaire et les charges dans un tableau.
+        const data = {
+            "title": $title.value,
+            "memo": $memo.value
+        };
+        requestToServer('./updateNotes.php',data,true);
+    }
+});
+
+// DELETE TODO
+$updateNote.addEventListener('click', event => {
+    const element = event.target;
+    if(element.hasAttribute('data-id')){
+        const destroyTodo = element.getAttribute('data-id');
+        // send request for delete entry by id
+        const data = {
+            "table": "blocnote",
+            "id": destroyTodo
+        };
+        requestToServer('./deleteSql.php',data,true);
+    }
+    console.log(evt);
+});
+
+// ENVOIE UNE REQUETE VERS UN SERVEUR DISTANT JS
+const requestToServer = (adressServe,data,state) => {
+    fetch(adressServe, {
+        method: "POST",
+        body: JSON.stringify(data)
+    })
+    .then(res => res.json())
+    .then(returnData => {
+        // Lecture de la réponse
+        if (returnData && returnData.success) {
+            $txtResult.value = returnData.success;
+            // Si suppression d'entrée, rafraichi la page en relançant une requete pour récupérer la liste
+            if (state){
+               updateDataBase(); 
+            }
+        } else {
+            $txtResult.value = "Erreur du serveur !";
+        }
+    })
+    .catch((error) => {
+        $txtResult.value = 'Il y a eu un problème avec l\'opération fetch: ' + error.message;
+    });  
+}
+
+// ACTUALISE L'APPLICATION
+updateDataBase(); 

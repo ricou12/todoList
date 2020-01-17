@@ -1,9 +1,4 @@
 <?php
-// RECUPERE LE FICHIER AU FORMAT JSON
-// EXTRAIT LES DONNEES 
-// ENREGISTREMENT DANS LA BASE DE DONNEES
-
-
 require_once('jsonEncode.php');
 // IMPORTE ET INSTANCIE LA CLASSE GESTION SQL
 require_once('Class_SqlComponent.class.php');
@@ -20,12 +15,12 @@ if(isset($data)) {
     // CONNEXION A LA BASE DE DONNEE
     $connect = $sqlCommande->connectDataBase('todoList');
     // ENREGISTRE LES DONNEES DANS LA DATABASE
-    $stateOfRequest = $sqlCommande->updateDatabase($data->title,$data->memo,'1');
+    $ResponseOfRequest = $sqlCommande->deleteEntry($data->table,$data->id);
     send_json([
-       "success" => $stateOfRequest
+       "success" => $ResponseOfRequest
        ]);
 } else {
     send_json([
-      "success" => false
+      "success" => "Aucune donnée reçue !"
       ]);
-}  
+}

@@ -25,41 +25,73 @@ class MyComponentsSql {
         }
     }
 
+    // AJOUTE UN NOUVEL UTILISATEUR DANS LA BASE (POST)
+    public function addNewUser($user,$email,$password){
+        // Si l'identifiant nom n'existe pas on procède à l'enregistrement.
+        //On utilise alors notre fonction password_hash :
+        $hash = password_hash($password1->get_value(), PASSWORD_DEFAULT);
+        // Crée une nouvelle entrée avec les coordonnees d'inscription du nouvel utilisateur.
+        $query = $bdd->prepare('INSERT INTO users(user,email,password) VALUES(:user, :email, :password);');
+        $query->bindParam(':user', $nom->get_value());
+        $query->bindParam(':email', $email->get_value());
+        $query->bindParam(':password', $hash);
+        $query->execute();
+        $query->closeCursor();
+    }
+
     // AJOUTE UNE NOUVELLE ENTREE DANS LA BASE (POST)
     public function updateDatabase($titre,$note,$user){
         try{
-            $query = $this->_dataBase->prepare('INSERT INTO blocnote(titre, note, user) VALUES(:titre, :note, :user)');
+            $query = $this->_dataBase->prepare('INSERT INTO blocnote(titre, note, user) VALUES (:titre, :note, :user)');
                 $query->execute(array(
                 'titre' => $titre,
                 'note' => $note,
                 'user' => intval($user),
 	        ));
-            // $query->closeCursor(); 
-            return true;
+            $query->closeCursor(); 
+            return "Enregistrement réussi !";
         } catch (Exception $e) {
-            return false;
+            return "Erreur lors de l'enregistrement, veuillez contacter l'administrateur !";
         }  
     }
 
+    // RENVOI LA LISTE DE TOUT LES MEMO
     function getDataBase($user){
-        // Récupère les infos dans la base de donnée.
-        $query = $this->_dataBase->prepare('SELECT titre,note FROM blocnote WHERE user = :user');
-        $query->bindParam(':user', intval($user));
-        $query->execute();
-        $result = $query->fetchAll();
-        $query->closeCursor();
-        return $result;
-        
+        try {
+            $query = $this->_dataBase->prepare('SELECT id,titre,note FROM blocnote WHERE user=:user');
+            $query->bindParam(':user', intval($user));
+            $query->execute();
+            $result = $query->fetchAll();
+            $query->closeCursor();
+            return $result;
+        } catch (Exception $e) {
+            return "Problèmes d'accès aux mémos, veuillez contacter l'administrateur !";
+        } 
+  
     }
 
     function getAllDataBase(){
         // Récupère les infos dans la base de donnée.
-        $query = $this->_dataBase->prepare('SELECT titre,note FROM blocnote');
-        $query->execute();
-        $result = $query->fetchAll();
-        $query->closeCursor();
-        return $result;
-        
+        try{
+            $query = $this->_dataBase->prepare('SELECT id,titre,note FROM blocnote');
+            $query->execute();
+            $result = $query->fetchAll();
+            $query->closeCursor();
+            return $result;
+        } catch (Exception $e) {
+            return [false];
+        } 
+    }
+
+    function deleteEntry($table,$id){
+        try{
+            $query = $this->_dataBase->prepare('DELETE FROM '.$table.' WHERE id=:id');
+            $query->bindParam(':id', intval($id));
+            $query->execute();
+            return "Suppression réussie !";
+        } catch (Exception $e) {
+            return "Erreur lors de la suppression, veuillez contacter l'administrateur !";
+        } 
     }
 }
 
