@@ -1,9 +1,11 @@
 const $main = document.querySelector('conteneur');
 //  récupèrer la liste des enregistrement.
-const $titleUpdate = document.querySelector('.updateNote input[name="nom"]');
-const $memoUpdate = document.querySelector('.updateNote textarea[name="note"]');
 const $buttonUpload = document.querySelector('.buttonUpload');
+const $updateNote = document.querySelector('.updateNote');
+// const $titleUpdate = document.querySelector('.updateNote input[name="nom"]');
+// const $memoUpdate = document.querySelector('.updateNote textarea[name="note"]');
 const $txtResult = document.querySelector('.txtResult');
+
 // Nouvel enregistrement
 const $btnSend = document.querySelector('.createNote button');
 const $title = document.querySelector('.createNote input[name="nom"]');
@@ -19,8 +21,8 @@ $btnSend.addEventListener('click', (evt) => {
     sendRequest(data);
 });
 
+// ENVOI LES DONNEES DU FORMULAIRE AU SERVEUR VIA UNE REQUETE DATA OBJ --> CONVERTI EN JSON
 const sendRequest = (data) => {
-    // ENVOI LES DONNEES DU FORMULAIRE AU SERVEUR VIA UNE REQUETE DATA OBJ --> CONVERTI EN JSON
     fetch('./updateNotes.php', {
         method: "POST",
         body: JSON.stringify(data)
@@ -30,6 +32,8 @@ const sendRequest = (data) => {
         // Lecture de la réponse
         if (returnData && returnData.success) {
             $message.innerHTML = "Enregistrement réussi !";
+            $title.value = "";
+            $memo.value = "";
         } else {
             $message.innerHTML = "Impossible d'enregistrer !";
         }
@@ -51,15 +55,33 @@ const updateDataBase = () => {
         .then(res => res.json())
         .then(returnData => {
             if (returnData){
-                // $message.innerHTML = returnData[0].titre;
-                $txtResult.value = returnData.map(element => element.titre ).join('');
-               
-                console.log(returnData);
+                $txtResult.value = "Connection réussie, réception des données !"; 
+                $updateNote.innerHTML = returnData.map(element => generateList(element.titre,element.note) ).join('');
+               console.log(returnData);
             } else {
-                $txtResult.value = "Erreur du serveur !"; 
+                $txtResult.value = "Connection réussie, pas de données disponible !"; 
             }
         })
         .catch((error) => {
             $txtResult.value = 'Il y a eu un problème avec l\'opération fetch: ' + error.message;
         });
+}
+
+const generateList = (title,note) => {
+    return `
+        <li class="UploadList-li border rounded mb-2 p-2">
+            <div class="row">
+                <div class="col-2">
+                    <input type="checkbox" id="titleUploaded">
+                    <label for="titleUploaded">${title}</label>
+                </div>
+                <div class="col">
+                    <p>${note}</p>
+                </div>
+                <div class="col-2">
+                    <button>dell</button>
+                </div>
+            </div>
+        </li>
+    `;
 }

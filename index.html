@@ -27,28 +27,22 @@
                         <textarea class="notes" placeholder="Notes" name="note" rows="5" cols="1" style="width: 100%;"></textarea>
                     </div>
                     <button type="button" class="button">Enregistrer</button>
-                    <h4></h4>
+                    <h4 class="border mt-2 bg-secondary text-white"></h4>
                 </form>
             </div>
         </div>
-        <div class="row">
+        <div class="row border">
             <div class="col-12 border p-2">
-                <h2>Importer la liste des posts</h2>
-                <button type="button" class="buttonUpload">Afficher mes notes</button>
+                <h2>Importer la liste des notes</h2>
+                <button type="button" class="buttonUpload">Télécharger</button>
                 <div class="form-group">
                     <label for="txtResult">Notes</label>
-                    <textarea id="txtResult" class="txtResult" placeholder="Message serveur" name="txtResult" rows="5" cols="1" style="width: 100%;"></textarea>
+                    <input type="text" class="txtResult form-control" id="txtResult" placeholder="Message serveur"
+                    name="nom">
                 </div>
-                <form class="updateNote">
-                    <div class="row">
-                        <div class="col-12 col-md-6">
-                            <input type="text" class="form-control" placeholder="Titre" name="nom">
-                        </div>
-                        <div class="col-12  col-md-6">
-                            <textarea class="notes" placeholder="Notes" name="note" rows="5" cols="1" style="width: 100%;"></textarea>
-                        </div>
-                    </div>
-                </form>
+            </div>
+            <div class="col-12 border p-2 ">
+                <ul class="updateNote"></ul>
             </div>
         </div>
     </div>

@@ -1,9 +1,9 @@
-<!-- RECUPERE LE FICHIER AU FORMAT JSON
-EXTRAIT LES DONNEES 
-ENREGISTREMENT DANS LA BASE DE DONNEES
--->
-
 <?php
+// RECUPERE LE FICHIER AU FORMAT JSON
+// EXTRAIT LES DONNEES 
+// ENREGISTREMENT DANS LA BASE DE DONNEES
+
+
 require_once('jsonEncode.php');
 // IMPORTE ET INSTANCIE LA CLASSE GESTION SQL
 require_once('Class_SqlComponent.class.php');
@@ -16,17 +16,16 @@ $json = file_get_contents('php://input');
 $data = json_decode($json);
 
 // traitement de donnees reçues et envoie une reponse au serveur.
-if( isset($data->title) || isset($data->memo) ) {
+if(isset($data)) {
     // CONNEXION A LA BASE DE DONNEE
     $connect = $servResponse->connectDataBase('todoList');
     // ENREGISTRE LES DONNEES DANS LA DATABASE
     $stateOfRequest = $servResponse->updateDatabase($data->title,$data->memo,'1');
     send_json([
-       "success" => true
+       "success" => $stateOfRequest
        ]);
 } else {
     send_json([
       "success" => false
       ]);
 }  
-

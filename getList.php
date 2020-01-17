@@ -6,7 +6,7 @@ $servResponse = new MyComponentsSql();
 
 // CONNEXION A LA BASE DE DONNEE
 $connect = $servResponse->connectDataBase('todoList');
-// RECUPERE TOUS LES ENREGISTREMENT
+// RECUPERE TOUS LES ENREGISTREMENT by ID USER
 $stateOfRequest = $servResponse->getDataBase('1');
 send_json($stateOfRequest);
     

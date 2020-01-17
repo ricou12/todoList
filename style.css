@@ -2,3 +2,8 @@
     padding: 10px;
     border: 1px dashed gray;
 }
+
+
+.UploadList-li{
+    list-style: none;
+}
