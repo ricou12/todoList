@@ -14,13 +14,14 @@ $data = json_decode($json);
 if(isset($data)) {
     // CONNEXION A LA BASE DE DONNEE
     $connect = $sqlCommande->connectDataBase('todoList');
+    // DOIT CONTROLER QU'UN COMPTE IDENTIQUE N'EXISTE PAS
     // ENREGISTRE LES DONNEES DANS LA DATABASE
-    $ResponseOfRequest = $sqlCommande->deleteEntry($data->table,$data->id);
+    $stateOfRequest = $sqlCommande->addNewUser($data->email,$data->password);
     send_json([
-       "success" => $ResponseOfRequest
+       "success" => $stateOfRequest
        ]);
 } else {
     send_json([
       "success" => false
       ]);
-}
+}  

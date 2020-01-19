@@ -16,11 +16,18 @@ $txtResult.addEventListener('input',(evt) => {
 
 // RECUPERE LA LISTE DES TODO PAR UTILISATEUR
 $buttonUpload.addEventListener('click', () => {
-    updateDataBase();
+   updateDataBase();
 });
+
 // Envoi de la requete de connexion au serveur pour récupérer la liste stocké dans la base de donnée.
 const updateDataBase = () => {
-    fetch('./getList.php',{method: "POST"})
+    const data = {
+        "id": "1"
+    };
+    fetch('./getList.php',{
+        method: "POST",
+        body: JSON.stringify(data)
+    })
         .then(res => res.json())
         .then(returnData => {
             if (returnData){
@@ -95,7 +102,7 @@ const requestToServer = (adressServe,data,state) => {
         if (returnData && returnData.success) {
             $txtResult.value = returnData.success;
             $title.value="";
-            $title.value="";
+            $memo.value="";
             // Si suppression d'entrée, rafraichi la page en relançant une requete pour récupérer la liste
             if (state){
                updateDataBase(); 
@@ -108,6 +115,7 @@ const requestToServer = (adressServe,data,state) => {
         $txtResult.value = 'Il y a eu un problème avec l\'opération fetch: ' + error.message;
     });  
 }
+
 
 // ACTUALISE L'APPLICATION
 updateDataBase(); 

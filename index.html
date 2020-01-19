@@ -20,13 +20,35 @@
                         <div class="col-md-4 border bg-dark text-white titre-h1">
                             <h1 class="text-center p-2">Bloc note</h1>
                         </div>
-                        <div class="col-md-8 border bg-light">
-                            <div class="form-group font-weight-bold mb-3">
-                                <label for="txtResult">Console</label>
-                                <input type="text" class="form-control txtResult" id="txtResult"
-                                    placeholder="Message serveur" disabled>
+                        <div class="col-md-8 border bg-light d-flex justify-content-around align-items-center connect border" data-connect="login">
+                            <div>
+                                <form class="form-inline">
+                                    <div class="form-group mb-2">
+                                        <input type="email" class="form-control" id="email" value="dwwm2019@gmail.com"
+                                            required>
+                                    </div>
+                                    <div class="form-group mx-md-3 mb-2">
+                                        <input type="password" class="form-control" id="password" placeholder="Password"
+                                            value="password" required>
+                                    </div>
+                                    <button type="button" class="btn btn-outline-primary mb-2 register">Se connecter</button>
+                                </form>
+                            </div>
+                            <div>
+                                <a class="text-info" href="#">
+                                    <h6 class="font-italic">S'inscrire</h6>
+                                </a>
                             </div>
                         </div>
+                    </div>
+                </div>
+                <div class="col-12 border my-4 p-2 bg-light">
+                    <div class="form-group font-weight-bold mb-3">
+                        <label for="txtResult">Console</label>
+                        <input type="text" class="form-control txtResult" id="txtResult" placeholder="Message serveur"
+                            disabled>
+                            <!-- <textarea class="txtResult" id="formGroupExampleInput2" placeholder="Message serveur" rows="3" cols="1"
+                            style="width: 100%;" disabled></textarea> -->
                     </div>
                 </div>
                 <h2 class="text-center">Enregistrer dans le bloc note</h2>
@@ -48,7 +70,8 @@
         <div class="row border p-2 mb-2">
             <div class="col-12 p-2 border p-2 bg-light">
                 <h2 class="text-center">Importer la liste des notes</h2>
-                <button type="button" class="btn btn-outline-secondary shadow buttonUpload">Mettre à jour les mémos</button>
+                <button type="button" class="btn btn-outline-secondary shadow buttonUpload">Mettre à jour les
+                    mémos</button>
 
             </div>
             <div class="col-12 p-2 updateNote"></div>
@@ -64,7 +87,7 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
         integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous">
     </script>
-    <script src="serveHost.js">
+    <script src="host.js">
 
 
     </script>
