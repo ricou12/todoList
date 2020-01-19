@@ -61,6 +61,8 @@ $btnLog.addEventListener('click', () => {
                     $btnLog.textContent = "Connexion";
                     $txtResult.value ="Vous êtes déconnectés !"
                     $stateLogin.setAttribute('data-connect', 'login');
+                    requestToServer('StopSession', './sessionStop.php', data);
+                    updateDataBase();
                     break;
                 default:
             }
@@ -159,7 +161,8 @@ function executeWork(command, data) {
                 $link.style.visibility = "hidden"; 
                     $stateLogin.setAttribute('data-connect', 'logger');
                     $btnLog.textContent = "Déconnexion";
-                    $txtResult.value = "Connexion OK !";
+                    $txtResult.value = "Connexion OK !" + " identifiant: " +  data.session;
+                    updateDataBase();
             } else {
                 $txtResult.value = data.msg;
             }

@@ -3,7 +3,7 @@
 // EXTRAIT LES DONNEES 
 // ENREGISTREMENT DANS LA BASE DE DONNEES
 
-
+session_start();
 require_once('jsonEncode.php');
 // IMPORTE ET INSTANCIE LA CLASSE GESTION SQL
 require_once('Class_SqlComponent.class.php');
@@ -20,7 +20,7 @@ if(isset($data)) {
     // CONNEXION A LA BASE DE DONNEE
     $connect = $sqlCommande->connectDataBase('todoList');
     // ENREGISTRE LES DONNEES DANS LA DATABASE
-    $stateOfRequest = $sqlCommande->updateDatabase($data->title,$data->memo,'1');
+    $stateOfRequest = $sqlCommande->updateDatabase($data->title,$data->memo,$_SESSION['user']);
     send_json([
        "success" => $stateOfRequest
        ]);

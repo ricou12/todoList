@@ -26,7 +26,9 @@ if(isset($data)) {
        // VERIFIE LA VALIDITE DU COMPTE
         if (password_verify($data->password, $stateOfRequest['mdp'])) {
             // RECUPERE L'ID ET OUVRE UNE SESSION POUR LE COMPTE
-            session_start();
+            if(!session_status()) {
+                session_start();
+            } 
             $_SESSION['user'] = $stateOfRequest['id'];
             send_json([
             "success" => true,
