@@ -25,7 +25,7 @@ class MyComponentsSql {
     // AJOUTE UN NOUVEL UTILISATEUR DANS LA BASE (POST)
     public function addNewUser($email,$password){
         try {
-            $mdp =$this->hashPassword($password);
+            $mdp = $this->hashPassword($password);
             $query = $this->_dataBase->prepare('INSERT INTO users (email,mdp) VALUES (:email, :mdp)');
             $query->bindParam(':email', $email);
             $query->bindParam(':mdp',$mdp);
@@ -45,7 +45,7 @@ class MyComponentsSql {
 			$query->execute();
 			$result = $query->fetch();
 			$query->closeCursor(); 
-        return $result;
+            return $result;
         } catch (Exception $e) {
         return false;
         }      

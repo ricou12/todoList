@@ -18,7 +18,7 @@ const $memo = document.querySelector('.createNote .notes');
 
 
 // CHANGER LOGIN OU LOGOUT
-$titleLog.addEventListener('click', () => {
+$titleLog.addEventListener('click', () =>{
     if ($stateLogin.hasAttribute('data-connect')) {
         const $state = $stateLogin.getAttribute('data-connect');
         switch ($state) {
@@ -38,31 +38,37 @@ $titleLog.addEventListener('click', () => {
 });
 
 // CONNEXION AU COMPTE USER
-$btnLog.addEventListener('click', () => {
+$btnLog.addEventListener('click', () =>
+{
     const $password = document.getElementById('password');
     const $email = document.getElementById('email');
-    if ($password.value && $email.value) {
-        if ($stateLogin.hasAttribute('data-connect')) {
-            const $state = $stateLogin.getAttribute('data-connect');
-            const data = {
+    if ($stateLogin.hasAttribute('data-connect'))
+    {
+        const $state = $stateLogin.getAttribute('data-connect');
+        if ($state == 'logger')
+        {
+            requestToServer('StopSession', './sessionStop.php',{});
+            $link.style.visibility = "visible";
+            $titleLog.textContent = "S'inscrire";
+            $btnLog.textContent = "Connexion";
+            $txtResult.value = "Vous êtes déconnectés !"
+            $stateLogin.setAttribute('data-connect', 'login');
+            updateDataBase();
+        }
+        if ($password.value && $email.value)
+        {
+            const data =
+            {
                 "email": $email.value,
                 "password": $password.value
             };
-            switch ($state) {
+            switch ($state)
+            {
                 case 'login':
                     requestToServer('getUser', './getUser.php', data);
                     break;
                 case 'logout':
                     requestToServer('addUser', './register.php', data);
-                    break;
-                case 'logger':
-                    $link.style.visibility = "visible"; 
-                    $titleLog.textContent = "S'inscrire";
-                    $btnLog.textContent = "Connexion";
-                    $txtResult.value ="Vous êtes déconnectés !"
-                    $stateLogin.setAttribute('data-connect', 'login');
-                    requestToServer('StopSession', './sessionStop.php', data);
-                    updateDataBase();
                     break;
                 default:
             }
@@ -159,21 +165,33 @@ function executeWork(command, data) {
         case 'getUser':
             if (data.success) {
                 $link.style.visibility = "hidden"; 
-                    $stateLogin.setAttribute('data-connect', 'logger');
-                    $btnLog.textContent = "Déconnexion";
-                    $txtResult.value = "Connexion OK !" + " identifiant: " +  data.session;
-                    updateDataBase();
+                $stateLogin.setAttribute('data-connect', 'logger');
+                $btnLog.textContent = "Déconnexion";
+                $txtResult.value = "Vous êtes connecté !" + " identifiant: " +  data.session;
+                updateDataBase();
             } else {
                 $txtResult.value = data.msg;
             }
             break;
         case 'addUser':
             if (data.success) {
-                $txtResult.value = "Merci d'avoir créer votre compte !";
+                $link.style.visibility = "hidden";
+                $stateLogin.setAttribute('data-connect', 'logger');
+                $btnLog.textContent = "Déconnexion";
+                $txtResult.value = "Merci d'avoir créer votre compte ! " + "Session: " + data.session;
             } else {
                 $txtResult.value = "Vous possédez deja un compte, merci de vous identifier !";
             }
             break;
+            case 'stopSession':
+                if(data.success){
+                    $link.style.visibility = "visible";
+                    $titleLog.textContent = "S'inscrire";
+                    $btnLog.textContent = "Connexion";
+                    $txtResult.value = "Vous êtes déconnectés !"
+                    $stateLogin.setAttribute('data-connect', 'login');
+                }
+                updateDataBase();
         default:
             console.log('erreur de commande : ' + command);
     }

@@ -1,11 +1,10 @@
 <?php
 // je recupere email + password
 // verifie dans la base de si user existe
-// renvoi l'i
+// renvoi l'id
 //cree une session
-
+require_once('openSession.php');
 require_once('jsonEncode.php');
-// IMPORTE ET INSTANCIE LA CLASSE GESTION SQL
 require_once('Class_SqlComponent.class.php');
 $sqlCommande = new MyComponentsSql();
 
@@ -26,10 +25,7 @@ if(isset($data)) {
        // VERIFIE LA VALIDITE DU COMPTE
         if (password_verify($data->password, $stateOfRequest['mdp'])) {
             // RECUPERE L'ID ET OUVRE UNE SESSION POUR LE COMPTE
-            if(!session_status()) {
-                session_start();
-            } 
-            $_SESSION['user'] = $stateOfRequest['id'];
+            newCreateSession($stateOfRequest['id']);
             send_json([
             "success" => true,
             "session" => $stateOfRequest['id']

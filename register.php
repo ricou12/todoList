@@ -1,5 +1,6 @@
 <?php
 require_once('jsonEncode.php');
+require_once('openSession.php');
 // IMPORTE ET INSTANCIE LA CLASSE GESTION SQL
 require_once('Class_SqlComponent.class.php');
 $sqlCommande = new MyComponentsSql();
@@ -17,11 +18,15 @@ if(isset($data)) {
     // DOIT CONTROLER QU'UN COMPTE IDENTIQUE N'EXISTE PAS
     // ENREGISTRE LES DONNEES DANS LA DATABASE
     $stateOfRequest = $sqlCommande->addNewUser($data->email,$data->password);
+    // ouvre une session
+    $getID = $sqlCommande->getIdUsers($data->email);
+    newCreateSession($getID['id']);
     send_json([
-       "success" => $stateOfRequest
+        "success" => $stateOfRequest,
+        "session" => $getID['id']
        ]);
 } else {
     send_json([
-      "success" => false
+        "success" => false
       ]);
 }  
