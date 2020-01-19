@@ -25,10 +25,10 @@ class MyComponentsSql {
     // AJOUTE UN NOUVEL UTILISATEUR DANS LA BASE (POST)
     public function addNewUser($email,$password){
         try {
-            $hash = password_hash($password, PASSWORD_DEFAULT);
+            $mdp =$this->hashPassword($password);
             $query = $this->_dataBase->prepare('INSERT INTO users (email,mdp) VALUES (:email, :mdp)');
             $query->bindParam(':email', $email);
-            $query->bindParam(':mdp', $hash);
+            $query->bindParam(':mdp',$mdp);
             $query->execute();
             $query->closeCursor();
             return true;
@@ -38,15 +38,14 @@ class MyComponentsSql {
     }
 
     // RECUPERE ID DU CLIENT (POST)
-    public function getIdUsers($id){
+    public function getIdUsers($email){
         try {
-
-            $query = $bdd->prepare('SELECT id FROM users WHERE id = :id');
-			$query->bindParam( ':id', $id);
+            $query = $this->_dataBase->prepare('SELECT id,email,mdp FROM users WHERE email = :email');
+			$query->bindParam(':email', $email);
 			$query->execute();
 			$result = $query->fetch();
 			$query->closeCursor(); 
-        return true;
+        return $result;
         } catch (Exception $e) {
         return false;
         }      
@@ -68,7 +67,7 @@ class MyComponentsSql {
         }  
     }
 
-    // RENVOI LA LISTE DE TOUT LES MEMO PAR USER
+    // RENVOI LA LISTE DE TOUT LES MEMOS PAR USER
     function getListTodo($user){
         try {
             $query = $this->_dataBase->prepare('SELECT id,titre,note FROM blocnote WHERE user=:user');
@@ -96,7 +95,7 @@ class MyComponentsSql {
     }
 
     // DELETE UNE ENTREE DANS LA TABLE MEMO
-    function deleteEntry($table,$id){
+    public function deleteEntry($table,$id){
         try{
             $query = $this->_dataBase->prepare('DELETE FROM '.$table.' WHERE id=:id');
             $query->bindParam(':id', intval($id));
@@ -105,6 +104,10 @@ class MyComponentsSql {
         } catch (Exception $e) {
             return "Erreur lors de la suppression, veuillez contacter l'administrateur !";
         } 
+    }
+
+    public function hashPassword($nom){
+        return password_hash($nom, PASSWORD_DEFAULT);
     }
 }
 

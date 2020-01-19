@@ -15,7 +15,7 @@ if(isset($data)) {
     // CONNEXION A LA BASE DE DONNEE
     $connect = $sqlCommande->connectDataBase('todoList');
     // RECUPERE TOUS LES ENREGISTREMENT by ID USER
-    $dataOfRequest = $sqlCommande->getListTodo($data->id);
+    $dataOfRequest = $sqlCommande->getListTodo('1');
     send_json($dataOfRequest);
 }
 

@@ -1,8 +1,10 @@
 const $txtResult = document.querySelector('.txtResult');
 
 // FORMULAIRE D'INSCRIPTION
+const $stateLogin = document.querySelector('.connect');
 const $btnLog = document.querySelector('.connect .register');
 const $titleLog = document.querySelector('.connect a h6');
+const $link = document.querySelector('.connect .link');
 
 // div qui contiendra tout les memos
 const $updateNote = document.querySelector('.updateNote');
@@ -17,7 +19,6 @@ const $memo = document.querySelector('.createNote .notes');
 
 // CHANGER LOGIN OU LOGOUT
 $titleLog.addEventListener('click', () => {
-    const $stateLogin = document.querySelector('.connect');
     if ($stateLogin.hasAttribute('data-connect')) {
         const $state = $stateLogin.getAttribute('data-connect');
         switch ($state) {
@@ -28,8 +29,9 @@ $titleLog.addEventListener('click', () => {
                 break;
             case 'logout':
                 $titleLog.textContent = "S'inscrire";
-                $btnLog.textContent = "Se connecter";
+                $btnLog.textContent = "Connexion";
                 $stateLogin.setAttribute('data-connect', 'login');
+                break;
             default:
         }
     }
@@ -37,7 +39,6 @@ $titleLog.addEventListener('click', () => {
 
 // CONNEXION AU COMPTE USER
 $btnLog.addEventListener('click', () => {
-    const $stateLogin = document.querySelector('.connect');
     const $password = document.getElementById('password');
     const $email = document.getElementById('email');
     if ($password.value && $email.value) {
@@ -49,10 +50,17 @@ $btnLog.addEventListener('click', () => {
             };
             switch ($state) {
                 case 'login':
-                    requestToServer('getUser', './createSession.php', data);
+                    requestToServer('getUser', './getUser.php', data);
                     break;
                 case 'logout':
                     requestToServer('addUser', './register.php', data);
+                    break;
+                case 'logger':
+                    $link.style.visibility = "visible"; 
+                    $titleLog.textContent = "S'inscrire";
+                    $btnLog.textContent = "Connexion";
+                    $txtResult.value ="Vous êtes déconnectés !"
+                    $stateLogin.setAttribute('data-connect', 'login');
                     break;
                 default:
             }
@@ -134,7 +142,7 @@ function executeWork(command, data) {
                 $title.value = "";
                 $memo.value = "";
             } else {
-                $txtResult.value = "Erreur lors de l'enregistrement, veuillez contacter l'administrateur !"
+                $txtResult.value = "Erreur lors de l'enregistrement, veuillez contacter l'administrateur !";
             }
             updateDataBase();
             break;
@@ -142,15 +150,25 @@ function executeWork(command, data) {
             if (data.success) {
                 $txtResult.value = "Suppression réussie !";
             } else {
-                $txtResult.value = "Erreur lors de la suppression, veuillez contacter l'administrateur !"
+                $txtResult.value = "Erreur lors de la suppression, veuillez contacter l'administrateur !";
             }
             updateDataBase();
+            break;
+        case 'getUser':
+            if (data.success) {
+                $link.style.visibility = "hidden"; 
+                    $stateLogin.setAttribute('data-connect', 'logger');
+                    $btnLog.textContent = "Déconnexion";
+                    $txtResult.value = "Connexion OK !";
+            } else {
+                $txtResult.value = data.msg;
+            }
             break;
         case 'addUser':
             if (data.success) {
                 $txtResult.value = "Merci d'avoir créer votre compte !";
             } else {
-                $txtResult.value = "Vous possédez deja un compte, merci de vous identifier !"
+                $txtResult.value = "Vous possédez deja un compte, merci de vous identifier !";
             }
             break;
         default:
