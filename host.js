@@ -112,7 +112,7 @@ const deleteRegister = () => {
 
 // ENVOIE LA REQUETE VERS LE SERVEUR DISTANT
 const requestToServer = (command, adressServe, data) => {
-    fetch(adressServe, {
+    return fetch(adressServe, {
             method: "POST",
             body: JSON.stringify(data)
         })
@@ -120,7 +120,7 @@ const requestToServer = (command, adressServe, data) => {
         .then(returnData => {
             if (returnData) {
                 // traitement de la réponse
-                executeWork(command, returnData);
+                return returnData;
             } else {
                 $txtResult.value = "Erreur du serveur !";
             }
