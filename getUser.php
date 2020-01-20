@@ -28,7 +28,8 @@ if(isset($data)) {
             newCreateSession($stateOfRequest['id']);
             send_json([
             "success" => true,
-            "session" => $stateOfRequest['id']
+            "session" => $stateOfRequest['id'],
+            "name" => $stateOfRequest['email']
             ]);
         } else {
              send_json([

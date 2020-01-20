@@ -53,7 +53,7 @@ $btnLog.addEventListener('click', () =>
             $btnLog.textContent = "Connexion";
             $txtResult.value = "Vous êtes déconnectés !"
             $stateLogin.setAttribute('data-connect', 'login');
-            updateDataBase();
+            $updateNote.innerHTML="";
         }
         if ($password.value && $email.value)
         {
@@ -79,11 +79,7 @@ $btnLog.addEventListener('click', () =>
 // RECUPERE LA LISTE DES TODO PAR UTILISATEUR
 $buttonUpload.addEventListener('click', () => updateDataBase());
 const updateDataBase = () => {
-    // send request for delete entry by id
-    const data = {
-        "id": "1"
-    };
-    requestToServer('upload', './getList.php', data);
+    requestToServer('upload', './getList.php', {});
 }
 
 // CREE UN NOUVEL ENREGISTREMENT DANS LA DATABASE
@@ -167,7 +163,7 @@ function executeWork(command, data) {
                 $link.style.visibility = "hidden"; 
                 $stateLogin.setAttribute('data-connect', 'logger');
                 $btnLog.textContent = "Déconnexion";
-                $txtResult.value = "Vous êtes connecté !" + " identifiant: " +  data.session;
+                $txtResult.value = "Vous êtes connecté !" + " identifiant: " +  data.session + " User :" + data.name;
                 updateDataBase();
             } else {
                 $txtResult.value = data.msg;
@@ -178,20 +174,21 @@ function executeWork(command, data) {
                 $link.style.visibility = "hidden";
                 $stateLogin.setAttribute('data-connect', 'logger');
                 $btnLog.textContent = "Déconnexion";
-                $txtResult.value = "Merci d'avoir créer votre compte ! " + "Session: " + data.session;
+                $txtResult.value = "Merci d'avoir créer votre compte ! " + "Session: " + data.session + " User :" + data.name;
             } else {
                 $txtResult.value = "Vous possédez deja un compte, merci de vous identifier !";
             }
             break;
             case 'stopSession':
                 if(data.success){
-                    $link.style.visibility = "visible";
-                    $titleLog.textContent = "S'inscrire";
-                    $btnLog.textContent = "Connexion";
-                    $txtResult.value = "Vous êtes déconnectés !"
-                    $stateLogin.setAttribute('data-connect', 'login');
+                    // $link.style.visibility = "visible";
+                    // $titleLog.textContent = "S'inscrire";
+                    // $btnLog.textContent = "Connexion";
+                    // $txtResult.value = "Vous êtes déconnectés !"
+                    // $stateLogin.setAttribute('data-connect', 'login');
+                    // $updateNote.innerHTML="";
                 }
-                updateDataBase();
+                // updateDataBase();
         default:
             console.log('erreur de commande : ' + command);
     }

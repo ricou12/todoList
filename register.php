@@ -23,7 +23,8 @@ if(isset($data)) {
     newCreateSession($getID['id']);
     send_json([
         "success" => $stateOfRequest,
-        "session" => $getID['id']
+        "session" => $getID['id'],
+        "name" => $getID['email']
        ]);
 } else {
     send_json([
