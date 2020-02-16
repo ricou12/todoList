@@ -37,7 +37,7 @@ $titleLog.addEventListener('click', () =>{
     }
 });
 
-// CONNEXION AU COMPTE USER
+// CONNEXION AU COMPTE USER OU AJOUT NOUVEL USER
 $btnLog.addEventListener('click', () =>
 {
     const $password = document.getElementById('password');
@@ -65,10 +65,38 @@ $btnLog.addEventListener('click', () =>
             switch ($state)
             {
                 case 'login':
-                    requestToServer('getUser', './getUser.php', data);
+                    requestToServer('./getUser.php', data)
+                    .then(data => {
+                        if (data.success) {
+                            $link.style.visibility = "hidden"; 
+                            $stateLogin.setAttribute('data-connect', 'logger');
+                            $btnLog.textContent = "Déconnexion";
+                            $txtResult.value = "Vous êtes connecté !" + " identifiant: " +  data.session + " User :" + data.name;
+                            $updateNote.innerHTML = data.userData.map(element => generateList(element.actiftodo,element.iduser, element.titretodo, element.contenutodo)).join('');
+                            updateDataBase();
+                        } else {
+                            $txtResult.value = data.msg;
+                        }
+                    })
+                    .catch((error) => {
+                        $txtResult.value = "Erreur du serveur: " + error.message;
+                    });
                     break;
                 case 'logout':
-                    requestToServer('addUser', './register.php', data);
+                    requestToServer('./register.php', data)
+                    .then(data => {
+                        if (data.success) {
+                            $link.style.visibility = "hidden";
+                            $stateLogin.setAttribute('data-connect', 'logger');
+                            $btnLog.textContent = "Déconnexion";
+                            $txtResult.value = "Merci d'avoir créer votre compte ! " + "Session: " + data.session + " User :" + data.name;
+                        } else {
+                            $txtResult.value = "Vous possédez deja un compte, merci de vous identifier !";
+                        }
+                    })
+                    .catch((error) => {
+                        $txtResult.value = "Erreur du serveur: " + error.message;
+                    });
                     break;
                 default:
             }
@@ -76,10 +104,21 @@ $btnLog.addEventListener('click', () =>
     }
 });
 
-// RECUPERE LA LISTE DES TODO PAR UTILISATEUR
+// RECUPERE LA LISTE DES TODOS PAR UTILISATEUR
 $buttonUpload.addEventListener('click', () => updateDataBase());
 const updateDataBase = () => {
-    requestToServer('upload', './getList.php', {});
+    requestToServer('./getList.php', {})
+    .then(data => {
+        if (data.success) {
+            $updateNote.innerHTML = data.map(element => generateList(element.id, element.titre, element.note)).join('');
+            // $txtResult.value = "Mémos mise à jour !";
+        } else {
+            // $txtResult.value = "Vous n'avez enregistré aucun mémo !";
+        }  
+    })
+    .catch((error) => {
+
+    });
 }
 
 // CREE UN NOUVEL ENREGISTREMENT DANS LA DATABASE
@@ -111,16 +150,15 @@ const deleteRegister = () => {
 }
 
 // ENVOIE LA REQUETE VERS LE SERVEUR DISTANT
-const requestToServer = (command, adressServe, data) => {
-    fetch(adressServe, {
+const requestToServer = (adressServe, data) => {
+    return fetch(adressServe, {
             method: "POST",
             body: JSON.stringify(data)
         })
         .then(res => res.json())
         .then(returnData => {
             if (returnData) {
-                // traitement de la réponse
-                executeWork(command, returnData);
+                return returnData;
             } else {
                 $txtResult.value = "Erreur du serveur !";
             }
@@ -194,13 +232,17 @@ function executeWork(command, data) {
     }
 }
 
-const generateList = (id, title, note) => {
+const generateList = (actiftodo,id, title, contenu) => {
+    let $checked="";
+    if(actiftodo){
+        $checked ="checked";
+    }
     return `
     <div class="container">
         <div class="row border">
             <div class="col-12 col-lg-4 d-flex flex-nowrap justify-content-between p-2">
                     <div class="d-flex flex-nowrap align-items-start">
-                        <input type="checkbox" id="titleUploaded">
+                        <input type="checkbox" id="titleUploaded" ${$checked} >
                         <label class="mx-2" for="titleUploaded">${title}</label>
                     </div>
                     <div>
@@ -208,12 +250,15 @@ const generateList = (id, title, note) => {
                     </div>
             </div>
             <div class="col-12 col-lg-8">
-                <p>${note}</p>
+                <p>${contenu}</p>
             </div>
         </div>
     </div>
     `;
 }
 
+const updateHtml = () => {
+    
+}
 // ACTUALISE L'APPLICATION
 updateDataBase();

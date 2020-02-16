@@ -8,10 +8,11 @@ require_once('jsonEncode.php');
 require_once('Class_SqlComponent.class.php');
 $sqlCommande = new MyComponentsSql();
 
- /* Il s'agit d'un flux en lecture seule qui nous permet de lire les données brutes du corps de la requête?quel que soit le type de contenu.*/
+ /* Il s'agit d'un flux en lecture seule qui nous permet de lire les données brutes du corps de la requête?
+ quel que soit le type de contenu.*/
 $json = file_get_contents('php://input');
 
-/* Cette fonction prend une chaîne JSON et la convertit en une variable PHP qui peut être un tableau ou un objet.*/
+/* Cette fonction converti une chaîne JSON en une variable PHP de type tableau.*/
 $data = json_decode($json);
 
 // traitement de donnees reçues et envoie une reponse au serveur.
@@ -19,17 +20,22 @@ if(isset($data)) {
     // CONNEXION A LA BASE DE DONNEE
     $connect = $sqlCommande->connectDataBase('todoList');
     // VERIFIE SI UN COMPTE EXISTE ET RENVOI L'ID
-    $stateOfRequest = $sqlCommande->getIdUsers($data->email);
+    $stateOfRequest = $sqlCommande->getUserAndListTodo($data->email);
     // SI USER A UN COMPTE
     if ($stateOfRequest){
-       // VERIFIE LA VALIDITE DU COMPTE
-        if (password_verify($data->password, $stateOfRequest['mdp'])) {
-            // RECUPERE L'ID ET OUVRE UNE SESSION POUR LE COMPTE
-            newCreateSession($stateOfRequest['id']);
+       // JOINTURE TABLE USER ET TODOLIST OU EMAIL DU CHAMP INPUT CORRESPOND A UN ELEMENT DE LA TABLE USER.
+        if (password_verify($data->password, $stateOfRequest['passworduser'])) {
+            // RECUPERE TOUT LES CHAMPS
+            newCreateSession($stateOfRequest['iduser']);
+            // ENVOIE AU CLIENT
             send_json([
             "success" => true,
-            "session" => $stateOfRequest['id'],
-            "name" => $stateOfRequest['email']
+            "iduser" => $stateOfRequest['iduser'],
+            "nomuser" => $stateOfRequest['nomuser'],
+            "titretodo" => $stateOfRequest['titretodo'],
+            "contenutodo" => $stateOfRequest['contenutodo'],
+            "actiftodo" => $stateOfRequest['actiftodo'],
+            "datetodo" => $stateOfRequest['datetodo']
             ]);
         } else {
              send_json([

@@ -17,14 +17,15 @@ if(isset($data)) {
     $connect = $sqlCommande->connectDataBase('todoList');
     // DOIT CONTROLER QU'UN COMPTE IDENTIQUE N'EXISTE PAS
     // ENREGISTRE LES DONNEES DANS LA DATABASE
-    $stateOfRequest = $sqlCommande->addNewUser($data->email,$data->password);
+    $stateOfRequest = $sqlCommande->addNewUser($data->email,$data->password,$speudo);
     // ouvre une session
     $getID = $sqlCommande->getIdUsers($data->email);
-    newCreateSession($getID['id']);
+    newCreateSession($getID['iduser']);
     send_json([
         "success" => $stateOfRequest,
-        "session" => $getID['id'],
-        "name" => $getID['email']
+        "session" => $getID['iduser'],
+        "name" => $getID['emailuser'],
+        "speudo" => $getID['speudouser']
        ]);
 } else {
     send_json([

@@ -23,12 +23,15 @@ class MyComponentsSql {
     }
 
     // AJOUTE UN NOUVEL UTILISATEUR DANS LA BASE (POST)
-    public function addNewUser($email,$password){
+    public function addNewUser($roleuser,$nomuser,$emailuser,$passworduser,$speudouser){
         try {
             $mdp = $this->hashPassword($password);
-            $query = $this->_dataBase->prepare('INSERT INTO users (email,mdp) VALUES (:email, :mdp)');
-            $query->bindParam(':email', $email);
-            $query->bindParam(':mdp',$mdp);
+            $query = $this->_dataBase->prepare('INSERT INTO user (roleuser,nomuser,emailuser,passworduser,speudouser) VALUES (:roleuser,:nomuser,:emailuser,:passworduser,:speudouser)');
+            $query->bindParam(':roleuser', $roleuser);
+            $query->bindParam(':nomuser',$nomuser);
+            $query->bindParam(':emailuser',$emailuser);
+            $query->bindParam(':passworduser',$passworduser);
+            $query->bindParam(':speudouser',$speudouser);
             $query->execute();
             $query->closeCursor();
             return true;
@@ -37,10 +40,24 @@ class MyComponentsSql {
         }
     }
 
+    // RENVOI LA LISTE DE TOUT LES MEMOS PAR USER
+    function getUserAndListTodo($email){
+        try {
+            $query = $this->_dataBase->prepare('SELECT * FROM user INNER JOIN todo ON user.iduser=todo.iduser where user.emailuser=::todoIdUser');
+            $query->bindParam(':todoIdUser', $email);
+            $query->execute();
+            $result = $query->fetchAll();
+            $query->closeCursor();
+            return $result;
+        } catch (Exception $e) {
+            return false;
+        } 
+    }
+
     // RECUPERE ID DU CLIENT (POST)
     public function getIdUsers($email){
         try {
-            $query = $this->_dataBase->prepare('SELECT id,email,mdp FROM users WHERE email = :email');
+            $query = $this->_dataBase->prepare('SELECT * FROM user WHERE email = :email');
 			$query->bindParam(':email', $email);
 			$query->execute();
 			$result = $query->fetch();
@@ -67,19 +84,7 @@ class MyComponentsSql {
         }  
     }
 
-    // RENVOI LA LISTE DE TOUT LES MEMOS PAR USER
-    function getListTodo($user){
-        try {
-            $query = $this->_dataBase->prepare('SELECT id,titre,note FROM blocnote WHERE user=:user');
-            $query->bindParam(':user', intval($user));
-            $query->execute();
-            $result = $query->fetchAll();
-            $query->closeCursor();
-            return $result;
-        } catch (Exception $e) {
-            return false;
-        } 
-    }
+    
 
     // RENVOI LA LISTE DE TOUT LES MEMO
     function getAllDataBase(){

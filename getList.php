@@ -17,6 +17,10 @@ if(isset($data)) {
     $connect = $sqlCommande->connectDataBase('todoList');
     // RECUPERE TOUS LES ENREGISTREMENT by ID USER
     $dataOfRequest = $sqlCommande->getListTodo($_SESSION['user']);
-    send_json($dataOfRequest);
+    $sendData = [
+        "success"=>true,
+        "data"=>$dataOfRequest
+    ];
+    send_json($sendData);
 }
 
