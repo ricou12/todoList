@@ -65,7 +65,7 @@ $btnLog.addEventListener('click', () =>
             switch ($state)
             {
                 case 'login':
-                    requestToServer('./getUser.php', data)
+                    requestToServer('http://127.0.0.1:8080/getUser.php', data)
                     .then(data => {
                         if (data.success) {
                             $link.style.visibility = "hidden"; 
@@ -153,6 +153,9 @@ const deleteRegister = () => {
 const requestToServer = (adressServe, data) => {
     return fetch(adressServe, {
             method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
             body: JSON.stringify(data)
         })
         .then(res => res.json())
